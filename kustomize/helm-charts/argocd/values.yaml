@@ -1,0 +1,36 @@
+controller:
+  resources:
+    requests:
+      memory: "320Mi"
+      cpu: "150m"
+    limits:
+      memory: "384Mi"
+
+dex:
+  enabled: true
+
+redis:
+  resources:
+    requests:
+      memory: "16Mi"
+      cpu: "10m"
+    limits:
+      memory: "32Mi"
+
+repoServer:
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "150m"
+    limits:
+      memory: "256Mi"
+
+server:
+  extraArgs:
+    - --insecure
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
