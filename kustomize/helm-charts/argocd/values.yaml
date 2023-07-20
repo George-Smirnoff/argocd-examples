@@ -7,7 +7,7 @@ controller:
       memory: "384Mi"
 
 dex:
-  enabled: true
+  enabled: false
 
 redis:
   resources:
