@@ -1,39 +1,40 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-patches:
 # - path: templates/argocd-server/deployment.yaml
 #   target:
 #     kind: Deployment
 #     labelSelector:
-  - target:
-      group: apps
-      version: v1
-      kind: Deployment
-      name: argo-test-argocd-server
-    patch: |-
-      - op: add
-        path: "/metadata/annotations/eks.amazonaws.com~1role-arn"
-        value: arn:aws:iam::1234:role/production-role
-      - op: add
-        path: "/spec/template/metadata/annotations/eks.amazonaws.com~1role-arn"
-        value: arn:aws:iam::1234:role/production-role
-      - op: add #action
-        path: "/spec/template/spec/nodeSelector" #resouirce we want to change
-        value:             #value we want to use for patching
-          env: prod
-          type: spot
-          version: "3"
-
-# annotations:
-#   example.com/annotation-key: "new-example-value"
+patches:
+- patch: |-
+    # - op: add
+    #   path: "/metadata/annotations/eks.amazonaws.com~1role-arn"
+    #   value: arn:aws:iam::1234:role/production-role
+    - op: add
+      path: "/spec/template/metadata/annotations/checksum~1argocd-secret"
+      value: '{{ include (print $.Template.BasePath "/argocd-configs/argocd-secret.yaml") . | sha256sum }}'
+    # - op: add
+    #   path: "/spec/template/spec/nodeSelector"
+    #   value:
+    #     env: prod
+    #     type: spot
+    #     version: "3"
+  target:
+    group: apps
+    kind: Deployment
+    name: argo-test-argocd-server
+    version: v1
 
 helmCharts:
 - name: argo-cd
-  repo: https://argoproj.github.io/argo-helm
-  version: "5.41.1"
-  releaseName: argo-test
   namespace: argocd-test
+  releaseName: argo-test
+  repo: https://argoproj.github.io/argo-helm
   valuesFile: values.yaml
-  # valuesInline:
-  #   fullnameOverride: argocd-test
+  version: 5.41.1
+# Solution to setup common annotaion with CLI: `kustomize edit add annotation annotationKey1: annotationValue1`
+# will affect all reasouces... not only argo-server
+# commonAnnotations:
+#   annotationKey1: annotationValue1
+
+
