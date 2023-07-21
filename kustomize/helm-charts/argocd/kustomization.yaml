@@ -12,7 +12,7 @@ patches:
     #   value: arn:aws:iam::1234:role/production-role
     - op: add
       path: "/spec/template/metadata/annotations/checksum~1argocd-secret"
-      value: '{{ include (print $.Template.BasePath "/argocd-configs/argocd-secret.yaml") . | sha256sum }}'
+      value: "{{ include (print $.Template.BasePath /argocd-configs/argocd-secret.yaml ) . | sha256sum }}"
     # - op: add
     #   path: "/spec/template/spec/nodeSelector"
     #   value:
